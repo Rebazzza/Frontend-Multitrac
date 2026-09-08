@@ -1,0 +1,10 @@
+.sidebar__icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.sidebar__logout .sidebar__icon {
+  width: 18px;
+  height: 18px;
+}

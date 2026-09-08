@@ -1,0 +1,335 @@
+login:
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8" />
+<link rel="stylesheet" href="globals.css">
+<link rel="stylesheet" href="styleguide.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+/** @type {import('tailwindcss').Config} */
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          colors: {
+            "color-background-brand-hover": "var(--color-background-brand-hover)",
+            "color-background-default-default": "var(--color-background-default-default)",
+            "color-border-brand-default": "var(--color-border-brand-default)",
+            "color-border-default-default": "var(--color-border-default-default)",
+            "color-primitives-brand-800": "var(--color-primitives-brand-800)",
+            "color-primitives-gray-300": "var(--color-primitives-gray-300)",
+            "color-text-brand-on-brand": "var(--color-text-brand-on-brand)",
+            "color-text-default-default": "var(--color-text-default-default)",
+          },
+          fontFamily: {
+            "body-base": "var(--body-base-font-family)",
+            "single-line-body-base": "var(--single-line-body-base-font-family)",
+          },
+        },
+      },
+      plugins: [],
+    }
+  </script>
+</head>
+<body>
+<main class="flex min-h-screen min-h-[1024px] w-full items-start justify-center bg-[linear-gradient(90deg,rgba(11,19,31,0.2)_38%,rgba(229,57,53,0.2)_100%),linear-gradient(180deg,rgba(11,19,31,1)_60%,rgba(21,62,44,1)_95%)] pt-12 sm:pt-[240px]">
+<section class="box-border flex min-h-[576px] w-[calc(100%-32px)] max-w-[554px] flex-col rounded-[45px] border border-solid border-[#24364d] bg-[#11202a] px-6 pt-[46px] sm:px-[64px]" aria-labelledby="login-title">
+<header class="text-center">
+<h1 id="login-title" class="m-0 whitespace-nowrap [font-family:'Inclusive_Sans-Regular',Helvetica] text-[52px] font-normal leading-[62.4px] tracking-[-1.56px] text-[#ecf0f1]">
+Atento Multitrac
+        </h1>
+<p class="-mt-px mb-0 whitespace-nowrap [font-family:'Inclusive_Sans-Regular',Helvetica] text-xl font-normal leading-6 tracking-[-0.60px] text-[#eedaa2]">
+Sistema de Control
+        </p>
+</header>
+<form class="mt-[33px] flex flex-col" action="#" method="post">
+<div class="flex h-[89px] flex-col items-start gap-[var(--size-space-200)]">
+<label for="username" class="m-0 self-stretch [font-family:'Instrument_Sans-Regular',Helvetica] text-xl font-normal leading-7 tracking-[0] text-[#ecf0f1]">
+UserName:
+          </label>
+<input id="username" name="username" type="text" value="lgrozo" autocomplete="username" required class="box-border h-[48px] w-full appearance-none rounded-[15px] border border-solid border-[#24364d] bg-[#11202a] px-[var(--size-space-400)] py-[var(--size-space-300)] [font-family:'Instrument_Sans-Regular',Helvetica] text-xl font-normal leading-5 tracking-[0] text-[#95a5a6] outline-none focus-visible:border-[#f3b312] focus-visible:ring-2 focus-visible:ring-[#f3b312]" />
+</div>
+<div class="mt-[33px] flex h-[88px] flex-col items-start gap-[var(--size-space-200)]">
+<label for="password" class="m-0 self-stretch [font-family:'Instrument_Sans-Regular',Helvetica] text-xl font-normal leading-7 tracking-[0] text-[#ecf0f1]">
+Password:
+          </label>
+<input id="password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required class="box-border h-[48px] w-full appearance-none rounded-[15px] border border-solid border-[#24364d] bg-[#11202a] px-[var(--size-space-400)] py-[var(--size-space-300)] [font-family:'Instrument_Sans-Regular',Helvetica] text-xl font-normal leading-5 tracking-[0] text-[#95a5a6] outline-none placeholder:text-[#95a5a6] focus-visible:border-[#f3b312] focus-visible:ring-2 focus-visible:ring-[#f3b312]" />
+</div>
+<label class="relative mt-[33px] inline-flex min-w-[120px] cursor-pointer items-center gap-[var(--size-space-300)] self-start">
+<input name="remember" type="checkbox" checked class="peer sr-only" />
+<span class="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-[10px] border border-solid border-[#f3b312] bg-[#f3b312] peer-focus-visible:ring-2 peer-focus-visible:ring-[#f3b312] peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#11202a]">
+<img class="h-[18px] w-[18px]" src="img/check.svg" alt="" aria-hidden="true" />
+</span>
+<span class="[font-family:'Instrument_Sans-Regular',Helvetica] text-xl font-normal leading-7 tracking-[0] text-[#ecf0f1]">
+Mantenme Conectado
+          </span>
+</label>
+<button type="submit" class="mt-[33px] flex h-[47px] w-[273px] self-center items-center justify-center gap-[var(--size-space-200)] overflow-hidden rounded-[15px] border-2 border-solid border-[#f3b312] bg-[#a27810] px-[var(--size-space-300)] py-[var(--size-space-300)] [font-family:'Instrument_Sans-Regular',Helvetica] text-xl font-normal leading-5 tracking-[0] text-[#ecf0f1] outline-none hover:bg-[#8f6a0e] focus-visible:ring-2 focus-visible:ring-[#f3b312] focus-visible:ring-offset-2 focus-visible:ring-offset-[#11202a] active:bg-[#79590c]">
+Iniciar Sesión
+        </button>
+</form>
+</section>
+</main>
+</body>
+</html>
+
+
+
+Registros de sueño:
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registros de Sueño | Atento Multitrac</title>
+<link rel="stylesheet" href="globals.css">
+<link rel="stylesheet" href="styleguide.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+/** @type {import('tailwindcss').Config} */
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {},
+      },
+      plugins: [],
+    }
+  </script>
+</head>
+<body>
+<main class="bg-[#0b131f] w-full min-w-[1440px] min-h-[1024px] relative text-white" aria-labelledby="page-title">
+<header class="absolute top-0 left-0 w-[1440px] h-24 border border-solid border-[#24364d] [background:linear-gradient(90deg,rgba(22,37,54,1)_73%,rgba(30,48,70,1)_100%)]">
+<button
+        type="button"
+        class="absolute top-[22px] left-[1208px] w-[172px] h-[53px] bg-[#0b131f] rounded-[26.5px] border-0 cursor-pointer"
+        aria-label="Abrir menú de usuario de Luis Grozo"
+      >
+<span class="absolute top-2 left-3 w-[37px] h-[37px] rounded-[18.5px] [background:linear-gradient(90deg,rgba(243,179,18,1)_0%,rgba(166,122,12,1)_100%)]"></span>
+<span class="absolute top-[18px] left-[18px] w-[27px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-white text-lg tracking-[0] leading-[18px] whitespace-nowrap">LG</span>
+<span class="absolute top-4 left-16 w-[89px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-white text-lg tracking-[0] leading-[18px] whitespace-nowrap">Luis Grozo</span>
+</button>
+</header>
+<aside class="absolute top-0 left-0 w-[327px] h-[1024px] border border-solid border-[#24364d] [background:linear-gradient(180deg,rgba(30,48,70,1)_43%,rgba(22,37,54,1)_100%)]" aria-label="Navegación principal">
+<div class="absolute top-[52px] left-[260px] w-[42px] h-10">
+<button type="button" class="absolute top-px left-0 w-[42px] h-[39px] bg-[#121e2c] rounded-[10px] border-0 cursor-pointer" aria-label="Contraer navegación">
+<img class="absolute w-[68.45%] h-[76.88%] top-[23.12%] left-[31.55%]" src="img/image.svg" alt="">
+</button>
+</div>
+<div class="absolute top-[71px] left-[84px] w-[186px] [font-family:'Inclusive_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-[32px] tracking-[-0.96px] leading-[38.4px]">
+ATENTO<br>MULTITRAC
+      </div>
+<span class="absolute top-[98px] left-[46px] w-5 h-5 bg-[#29904d] rounded-[10px] shadow-[0px_0px_10px_#29914e]" aria-label="Sistema conectado"></span>
+<nav aria-label="Secciones de la aplicación">
+<ul class="m-0 p-0 list-none">
+<li>
+<a href="#" aria-current="page" class="flex w-56 h-14 items-center gap-5 pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute top-[190px] left-[47px] bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#24364d]">
+<img class="relative w-[22px] h-[22px]" src="img/icono-dashboard.svg" alt="">
+<span class="relative w-fit [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-xl tracking-[0] leading-5 whitespace-nowrap">INICIO</span>
+</a>
+</li>
+<li>
+<a href="#" class="top-[286px] left-[47px] flex w-56 h-14 items-center gap-5 pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#24364d]">
+<img class="relative w-[26px] h-[26px]" src="img/check-square.svg" alt="">
+<span class="relative w-fit [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-xl tracking-[0] leading-5 whitespace-nowrap">CHECKLIST</span>
+</a>
+</li>
+<li>
+<a href="#" class="top-[382px] left-[46px] flex w-56 h-14 items-center gap-5 pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#24364d]">
+<img class="relative w-[26px] h-[26px]" src="img/clock.svg" alt="">
+<span class="relative w-fit [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-xl tracking-[0] leading-5 whitespace-nowrap">SUEÑO</span>
+</a>
+</li>
+<li>
+<a href="#" class="top-[478px] left-[47px] flex w-56 h-14 items-center gap-5 pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#24364d]">
+<img class="relative w-6 h-6" src="img/truck.svg" alt="">
+<span class="relative w-fit [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-xl tracking-[0] leading-5 whitespace-nowrap">DOC. EQUIPOS</span>
+</a>
+</li>
+<li>
+<a href="#" class="flex w-56 h-14 items-center justify-center gap-2 pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute top-[574px] left-[47px] bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#24364d]">
+<img class="relative w-6 h-6 ml-[-3.50px]" src="img/users.svg" alt="">
+<span class="mr-[-3.50px] relative w-fit [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-xl tracking-[0] leading-5 whitespace-nowrap">DOC. PERSONAL</span>
+</a>
+</li>
+</ul>
+</nav>
+<button type="button" class="flex w-56 h-14 items-center gap-[var(--size-space-200)] pt-[var(--size-space-300)] pr-[var(--size-space-300)] pb-[var(--size-space-300)] pl-[var(--size-space-300)] absolute top-[912px] left-[50px] bg-[#aa322f] rounded-[15px] overflow-hidden border-2 border-solid border-[#e65656] cursor-pointer">
+<span class="relative w-[26px] h-6">
+<img class="absolute w-[93.27%] h-[93.75%] top-[6.25%] left-[6.73%]" src="img/icon.svg" alt="">
+</span>
+<span class="relative w-fit [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-xl text-right tracking-[0] leading-5 whitespace-nowrap">Cerrar Sesión</span>
+</button>
+</aside>
+<section class="absolute top-[143px] left-[372px] w-[1032px]" aria-labelledby="page-title">
+<h1 id="page-title" class="absolute top-0 left-0 w-[560px] m-0 [font-family:'Inclusive_Sans-Bold',Helvetica] font-bold text-white text-[52px] tracking-[0] leading-[58px] whitespace-nowrap">
+Registros de Sueño
+      </h1>
+<button type="button" class="flex w-[200px] h-12 items-center justify-center gap-[5px] pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute top-[-1px] left-[808px] bg-[#164989] rounded-[20px] overflow-hidden border-2 border-solid border-[#409ff5] cursor-pointer">
+<span class="relative w-fit [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-xl tracking-[0] leading-5 whitespace-nowrap">Agregar</span>
+</button>
+<form class="absolute top-[97px] left-0 w-[1012px] h-12" aria-label="Filtros de registros de sueño">
+<div class="absolute top-0 left-0 w-[136px] h-12 bg-[#121e2c] rounded-[26.5px] border-2 border-solid border-[#ecf0f1]">
+<label for="filter-field" class="absolute top-[11px] left-[18px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-white text-xl tracking-[0] leading-5 whitespace-nowrap">Filtrar por:</label>
+</div>
+<label for="filter-value" class="sr-only">Elegir opción para filtrar</label>
+<div class="absolute top-[-2px] left-[162px] w-[204px] h-[47px]">
+<select id="filter-value" name="filter-value" class="w-full h-full appearance-none bg-transparent border-0 rounded-[20px] cursor-pointer text-transparent focus:outline-none" aria-label="Elegir una opción">
+<option value="" selected>Elegir una opción</option>
+</select>
+<img class="absolute top-0 left-0 w-[204px] h-[47px] pointer-events-none" src="img/select-field.png" alt="">
+</div>
+<label for="start-date" class="sr-only">Fecha de inicio</label>
+<div class="flex flex-col w-[204px] h-12 items-start gap-[var(--size-space-200)] absolute top-0 left-[418px]">
+<div class="flex min-w-[120px] h-[50px] items-center gap-[var(--size-space-200)] pt-[var(--size-space-300)] pr-[var(--size-space-400)] pb-[var(--size-space-300)] pl-[var(--size-space-400)] relative self-stretch w-full mt-[-1.00px] mb-[-1.00px] ml-[-1.00px] mr-[-1.00px] bg-[#121e2c] rounded-[20px] border border-solid border-[#24364d]">
+<input id="start-date" name="start-date" type="text" inputmode="numeric" placeholder="Inicio: dd/mm/aa" class="relative flex-1 min-w-0 bg-transparent border-0 p-0 [font-family:'Instrument_Sans-Medium',Helvetica] font-medium text-[#ecf0f1] placeholder:text-[#95a5a67a] text-lg tracking-[0] leading-[18px] focus:outline-none">
+<img class="relative w-4 h-4 pointer-events-none" src="img/calendar.svg" alt="">
+</div>
+</div>
+<label for="end-date" class="sr-only">Fecha de fin</label>
+<div class="flex flex-col w-[204px] h-12 items-start gap-[var(--size-space-200)] absolute top-0 left-[671px]">
+<div class="flex min-w-[120px] h-[50px] items-center gap-[var(--size-space-200)] pt-[var(--size-space-300)] pr-[var(--size-space-400)] pb-[var(--size-space-300)] pl-[var(--size-space-400)] relative self-stretch w-full mt-[-1.00px] mb-[-1.00px] ml-[-1.00px] mr-[-1.00px] bg-[#121e2c] rounded-[20px] border border-solid border-[#24364d]">
+<input id="end-date" name="end-date" type="text" inputmode="numeric" placeholder="Fin: dd/mm/aa" class="relative flex-1 min-w-0 bg-transparent border-0 p-0 [font-family:'Instrument_Sans-Medium',Helvetica] font-medium text-[#ecf0f1] placeholder:text-[#95a5a67a] text-lg tracking-[0] leading-[18px] focus:outline-none">
+<img class="relative w-4 h-4 pointer-events-none" src="img/calendar.svg" alt="">
+</div>
+</div>
+</form>
+<section class="absolute top-[193px] left-0 w-[1032px]" aria-label="Listado de registros de sueño">
+<div role="table" aria-label="Registros de sueño" class="relative w-[1032px]">
+<div role="rowgroup" class="absolute top-0 left-0 w-[1032px] h-12">
+<div role="row">
+<div role="columnheader" class="absolute top-0 left-0 w-[59px] h-12 bg-[#1e3045] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[15px] left-[15px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">ID</span>
+</div>
+<div role="columnheader" class="absolute top-0 left-14 w-[159px] h-12 bg-[#1e3045] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[14px] left-[35px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">Personal</span>
+</div>
+<div role="columnheader" class="absolute top-0 left-[197px] w-[164px] h-12 bg-[#1e3045] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[15px] left-[19px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">Transportista</span>
+</div>
+<div role="columnheader" class="absolute top-0 left-[350px] w-[196px] h-12 bg-[#1e3045] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[14px] left-[35px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">Operación</span>
+</div>
+<div role="columnheader" class="absolute top-0 left-[513px] w-[155px] h-12 bg-[#1e3045] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[15px] left-[47px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">Fecha</span>
+</div>
+<div role="columnheader" class="absolute top-0 left-[647px] w-[87px] h-12 bg-[#1e3045] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[15px] left-[14px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">Sueño</span>
+</div>
+<div role="columnheader" class="absolute top-0 left-[732px] w-[91px] h-12 bg-[#1e3045] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[15px] left-[11px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">Captura</span>
+</div>
+<div role="columnheader" class="absolute top-0 left-[821px] w-[111px] h-12 bg-[#1e3045] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[15px] left-[29px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">Estado</span>
+</div>
+<div role="columnheader" class="absolute top-0 left-[930px] w-[102px] h-12 bg-[#1e3045] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[14px] left-[21px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">Accion</span>
+</div>
+</div>
+</div>
+<div role="rowgroup" class="absolute top-[46px] left-0">
+<div role="row" class="absolute top-0 left-0 w-[1032px] h-[87px]">
+<div role="cell" class="h-[89px] absolute top-0 left-0 w-[60px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="top-[35px] left-2.5 absolute w-[35px] [font-family:'Instrument_Sans-Regular',Helvetica] font-normal text-[#ecf0f1] text-lg tracking-[0] leading-[18px] whitespace-nowrap">001</span>
+</div>
+<div role="cell" class="h-[89px] absolute top-0 left-14 w-[143px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="absolute top-3.5 left-[4px] w-[141px] [font-family:'Instrument_Sans-Regular',Helvetica] font-normal text-[#ecf0f1] text-lg tracking-[0] leading-[21.6px]">Julca Paredes José Gustavo</span>
+</div>
+<div role="cell" class="h-[89px] absolute top-0 left-[197px] w-[155px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[9px] left-[10px] w-[137px] [font-family:'Instrument_Sans-Regular',Helvetica] font-normal text-[#ecf0f1] text-lg tracking-[0] leading-[23.4px]">SERVICIOS GENERALES GR EIRL</span>
+</div>
+<div role="cell" class="h-[89px] absolute top-0 left-[350px] w-[165px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[11px] left-[11px] w-[143px] [font-family:'Instrument_Sans-Regular',Helvetica] font-normal text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">RANSA : CALLAO - YANACOCHA (ESCOLTA)</span>
+</div>
+<div role="cell" class="h-[89px] absolute top-0 left-[513px] w-[136px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="top-[18px] left-[15px] w-[111px] text-[#ecf0f1] text-lg leading-[27px] absolute [font-family:'Instrument_Sans-Regular',Helvetica] font-normal tracking-[0]">10/08/2026 15:58</span>
+</div>
+<div role="cell" class="h-[89px] absolute top-0 left-[647px] w-[87px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="absolute top-7 left-[6px] w-[72px] h-[31px] bg-[#29904d2b] rounded-[26.5px] border-2 border-solid border-[#29904d]"></span>
+<span class="top-[35px] left-[24px] w-[35px] text-[#29904d] text-base leading-4 whitespace-nowrap absolute [font-family:'Instrument_Sans-Regular',Helvetica] font-normal tracking-[0]">8:00</span>
+</div>
+<div role="cell" class="h-[89px] absolute top-0 left-[732px] w-[91px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<button type="button" class="w-[66px] top-6 left-[13px] flex h-[39px] items-center justify-center gap-[5px] pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#1e3045] cursor-pointer">
+<span class="relative w-fit mt-[-3.50px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px] whitespace-nowrap">Ver</span>
+</button>
+</div>
+<div role="cell" class="h-[89px] absolute top-0 left-[821px] w-[111px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="absolute top-7 left-[7px] w-[93px] h-[31px] bg-[#409ff512] rounded-[26.5px] border-2 border-solid border-[#409ff5]"></span>
+<span class="absolute top-[35px] left-[29px] w-[53px] [font-family:'Instrument_Sans-Medium',Helvetica] font-medium text-[#409ff5] text-base tracking-[0] leading-4 whitespace-nowrap">Activo</span>
+</div>
+<div role="cell" class="h-[89px] absolute top-0 left-[930px] w-[102px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<button type="button" class="w-[75px] top-1 left-[13px] flex h-[39px] items-center justify-center gap-[5px] pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#1e3045] cursor-pointer">
+<span class="relative w-fit mt-[-3.50px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px] whitespace-nowrap">Ver</span>
+</button>
+<button type="button" class="w-[93px] top-[45px] left-[5px] flex h-[39px] items-center justify-center gap-[5px] pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#1e3045] cursor-pointer">
+<span class="relative w-fit mt-[-3.50px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px] whitespace-nowrap">Editar</span>
+</button>
+</div>
+</div>
+<div role="row" class="absolute top-[87px] left-0 w-[1032px] h-28">
+<div role="cell" class="h-28 absolute top-0 left-0 w-[60px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="top-[50px] left-3 absolute w-[35px] [font-family:'Instrument_Sans-Regular',Helvetica] font-normal text-[#ecf0f1] text-lg tracking-[0] leading-[18px] whitespace-nowrap">002</span>
+</div>
+<div role="cell" class="h-28 absolute top-0 left-14 w-[143px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[31px] left-[4px] w-[141px] [font-family:'Instrument_Sans-Regular',Helvetica] font-normal text-[#ecf0f1] text-lg tracking-[0] leading-[21.6px]">Ramire Paredes Melquiades</span>
+</div>
+<div role="cell" class="h-28 absolute top-0 left-[197px] w-[155px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[9px] left-[10px] w-[137px] [font-family:'Instrument_Sans-Regular',Helvetica] font-normal text-[#ecf0f1] text-lg tracking-[0] leading-[23.4px]">TRANSPORTES SAN FRANCISCO SRL</span>
+</div>
+<div role="cell" class="h-28 absolute top-0 left-[350px] w-[165px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[30px] left-[11px] w-[143px] [font-family:'Instrument_Sans-Regular',Helvetica] font-normal text-[#ecf0f1] text-lg tracking-[0] leading-[18px]">RANSA : LIMA - YANACOCHA (CAL)</span>
+</div>
+<div role="cell" class="h-28 absolute top-0 left-[513px] w-[136px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="top-[31px] left-[17px] w-[111px] text-[#ecf0f1] text-lg leading-[27px] absolute [font-family:'Instrument_Sans-Regular',Helvetica] font-normal tracking-[0]">10/08/2026 15:58</span>
+</div>
+<div role="cell" class="h-28 absolute top-0 left-[647px] w-[87px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[43px] left-[8px] w-[72px] h-[31px] bg-[#aa322f3b] rounded-[26.5px] border-2 border-solid border-[#e65656]"></span>
+<span class="top-[50px] left-[26px] w-[35px] text-[#e65656] text-base leading-4 whitespace-nowrap absolute [font-family:'Instrument_Sans-Regular',Helvetica] font-normal tracking-[0]">5:00</span>
+</div>
+<div role="cell" class="h-28 absolute top-0 left-[732px] w-[91px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<button type="button" class="w-[66px] top-[35px] left-[14px] flex h-[39px] items-center justify-center gap-[5px] pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#1e3045] cursor-pointer">
+<span class="relative w-fit mt-[-3.50px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px] whitespace-nowrap">Ver</span>
+</button>
+</div>
+<div role="cell" class="h-28 absolute top-0 left-[821px] w-[111px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<span class="absolute top-[43px] left-[9px] w-[93px] h-[31px] bg-[#409ff512] rounded-[26.5px] border-2 border-solid border-[#409ff5]"></span>
+<span class="absolute top-[50px] left-[29px] w-[53px] [font-family:'Instrument_Sans-Medium',Helvetica] font-medium text-[#409ff5] text-base tracking-[0] leading-4 whitespace-nowrap">Activo</span>
+</div>
+<div role="cell" class="h-28 absolute top-0 left-[930px] w-[102px] bg-[#162536] border-2 border-solid border-[#24364d]">
+<button type="button" class="w-[75px] top-3 left-[13px] flex h-[39px] items-center justify-center gap-[5px] pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#1e3045] cursor-pointer">
+<span class="relative w-fit mt-[-3.50px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px] whitespace-nowrap">Ver</span>
+</button>
+<button type="button" class="w-[93px] top-[61px] left-[4px] flex h-[39px] items-center justify-center gap-[5px] pt-[var(--size-space-300)] pb-[var(--size-space-300)] px-[18px] absolute bg-[#121e2c] rounded-[20px] overflow-hidden border-2 border-solid border-[#1e3045] cursor-pointer">
+<span class="relative w-fit mt-[-3.50px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-[#ecf0f1] text-lg tracking-[0] leading-[18px] whitespace-nowrap">Editar</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<nav class="absolute top-[936px] left-[932px] w-[448px] h-12" aria-label="Paginación">
+<span class="absolute top-[14px] left-0 w-[193px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-white text-lg tracking-[0] leading-[18px]">Elementos por página:</span>
+<label for="page-size" class="sr-only">Elementos por página</label>
+<div class="absolute top-0 left-[211px] w-[68px] h-12 bg-[#162536] rounded-[26.5px] border-2 border-solid border-[#24364d]">
+<select id="page-size" name="page-size" class="absolute top-0 left-0 w-full h-full appearance-none bg-transparent border-0 pl-[15px] pr-[25px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-white text-xl tracking-[0] leading-5 cursor-pointer focus:outline-none">
+<option value="1" selected>1</option>
+</select>
+<img class="absolute top-[16px] left-[35px] w-4 h-4 pointer-events-none" src="img/chevron-down.svg" alt="">
+</div>
+<span class="absolute top-[15px] left-[297px] w-[53px] [font-family:'Instrument_Sans-SemiBold',Helvetica] font-semibold text-white text-lg tracking-[0] leading-[18px] whitespace-nowrap">1 de 1</span>
+<button type="button" class="absolute top-[8px] left-[368px] w-8 h-8 bg-transparent border-0 p-0 cursor-pointer" aria-label="Página anterior" disabled>
+<img class="w-8 h-8" src="img/arrow-left-circle.svg" alt="">
+</button>
+<button type="button" class="absolute top-[8px] left-[417px] w-8 h-8 bg-transparent border-0 p-0 cursor-pointer" aria-label="Página siguiente" disabled>
+<img class="w-8 h-8" src="img/arrow-right-circle.svg" alt="">
+</button>
+</nav>
+</main>
+</body>
+</html>

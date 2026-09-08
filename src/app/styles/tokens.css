@@ -1,0 +1,46 @@
+:root {
+  /* Paleta ATENTO MULTITRAC (dark navy) */
+  --color-bg-page: #0b131f;
+  --color-bg-card: #172739;
+  --color-bg-card-alt: #18283a;
+  --color-bg-elevated: #1e3046;
+  --color-bg-input: #121e2c;
+  --color-bg-hover: #1b2a3d;
+  --color-border: #24364d;
+  --color-text-primary: #ecf0f1;
+  --color-text-muted: #94a3b8;
+  --color-primary: #1662a7;
+  --color-primary-hover: #1b74c1;
+  --color-primary-border: #409ff5;
+  --color-danger-bg: #aa322f;
+  --color-danger-hover: #c13b37;
+  --color-danger-border: #e65656;
+  --color-success: #29904d;
+  --color-warning: #f3b312;
+
+  /* Gradientes del diseño */
+  --gradient-sidebar: linear-gradient(180deg, #1e3046 43%, #162536 100%);
+  --gradient-header: linear-gradient(90deg, #162536 73%, #1e3046 100%);
+  --gradient-avatar: linear-gradient(90deg, #f3b312 0%, #a67a0c 100%);
+
+  /* Tipografía */
+  --font-display: 'Inclusive Sans', Helvetica, Arial, sans-serif;
+  --font-body: 'Instrument Sans', Helvetica, Arial, sans-serif;
+
+  /* Radios */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-pill: 19px;
+
+  /* Sombras */
+  --shadow-card: 0 4px 2px rgba(36, 52, 77, 0.93);
+  --shadow-card-alt: 0 4px 2px #22344a;
+
+  /* Espaciado */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+}
