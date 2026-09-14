@@ -4,6 +4,8 @@ import { LoginPage } from './modules/auth/login.page';
 import { RegisterPage } from './modules/auth/register.page';
 import { ChangePasswordPage } from './modules/auth/change-password.page';
 import { CatalogRoutes } from './modules/catalogs/catalog.routes';
+import { SuenoRoutes } from './modules/sueno/sueno.routes';
+import { PersonalPage } from './modules/personal/PersonalPage';
 import { DashboardPage } from './modules/dashboard/dashboard.page';
 import { MainLayout } from './shared/layouts/main-layout';
 
@@ -17,6 +19,8 @@ export function AppRoutes() {
       <Route element={<AuthGuard />}>
         <Route element={<MainLayout />}>
           <Route index element={<DashboardPage />} />
+          <Route path="/sueno/*" element={<SuenoRoutes />} />
+          <Route path="/personal" element={<PersonalPage />} />
           <Route path="/catalogos/*" element={<CatalogRoutes />} />
         </Route>
       </Route>

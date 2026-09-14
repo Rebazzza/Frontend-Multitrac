@@ -111,9 +111,9 @@ const ICONS: Record<string, ReactNode> = {
 
 const MODULE_ITEMS: { label: string; icon: string; to?: string }[] = [
   { label: 'INICIO', icon: 'inicio', to: '/' },
-  { label: 'SUEÑO', icon: 'turno' },
+  { label: 'SUEÑO', icon: 'turno', to: '/sueno' },
   { label: 'DOC. EQUIPOS', icon: 'flota' },
-  { label: 'DOC. PERSONAL', icon: 'personal' },
+  { label: 'DOC. PERSONAL', icon: 'personal', to: '/personal' },
 ];
 
 const CATALOG_ITEMS: NavItem[] = [
