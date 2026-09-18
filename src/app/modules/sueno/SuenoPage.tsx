@@ -6,6 +6,7 @@ import { DataTable, type Column } from '../../shared/components/data-table';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog';
 import { suenoService } from '../../core/services/sueno.service';
 import { personalService } from '../../core/services/personal.service';
+import { useLookupMaps, pickName, type LookupSpec } from '../../core/hooks/use-lookup-maps';
 import type { PagedParams } from '../../models/paged-params.model';
 import type { PagedResponse } from '../../models/paged-response.model';
 import type { PersonalSueno } from '../../models/personal-sueno.model';
@@ -13,6 +14,12 @@ import type { Personal } from '../../models/personal.model';
 import type { ApiError } from '../../core/interceptors/error.interceptor';
 import { SuenoFormModal, type SuenoFormValues } from './SuenoFormModal';
 import './SuenoPage.css';
+
+const SUEÑO_LOOKUPS: LookupSpec[] = [
+  { key: 'empresa', resource: 'Empresa', idField: 'idEmpresa' },
+  { key: 'operacion', resource: 'Operacion', idField: 'idOperacion' },
+  { key: 'operacionGeneral', resource: 'OperacionGeneral', idField: 'idOperacionGeneral' },
+];
 
 function getNombrePersonal(personalList: Personal[], idPersonal?: number | null): string {
   const p = personalList.find((item) => item.idPersonal === idPersonal);
@@ -30,6 +37,7 @@ function formatFecha(value?: string | null): string {
 export function SuenoPage() {
   const [data, setData] = useState<PagedResponse<PersonalSueno> | null>(null);
   const [personalList, setPersonalList] = useState<Personal[]>([]);
+  const { maps } = useLookupMaps(SUEÑO_LOOKUPS);
   const [params, setParams] = useState<PagedParams>({
     page: 1,
     pageSize: 25,
@@ -79,8 +87,29 @@ export function SuenoPage() {
       header: 'Conductor',
       render: (item) => <span>{getNombrePersonal(personalList, item.idPersonal)}</span>,
     },
-    { key: 'idEmpresa', header: 'Empresa', render: (item) => <span>{item.idEmpresa ?? '—'}</span> },
-    { key: 'idOperacionGeneral', header: 'Operación', render: (item) => <span>{item.idOperacionGeneral ?? '—'}</span> },
+    {
+      key: 'idEmpresa',
+      header: 'Empresa',
+      render: (item) => {
+        const rec = maps.empresa?.get(Number(item.idEmpresa));
+        const name = pickName(rec, ['nomEmpresa', 'descEmpresa']);
+        return <span>{name ?? (item.idEmpresa != null ? `#${item.idEmpresa}` : '—')}</span>;
+      },
+    },
+    {
+      key: 'idOperacionGeneral',
+      header: 'Operación',
+      render: (item) => {
+        const operacionGeneral = maps.operacionGeneral?.get(Number(item.idOperacionGeneral));
+        const operacion = operacionGeneral
+          ? maps.operacion?.get(Number(operacionGeneral.idOperacion))
+          : undefined;
+        const name = pickName(operacion, ['descOperacion']);
+        if (name) return <span>{name}</span>;
+        if (operacionGeneral) return <span>{`OpG #${operacionGeneral.idOperacionGeneral}`}</span>;
+        return <span>{item.idOperacionGeneral != null ? `#${item.idOperacionGeneral}` : '—'}</span>;
+      },
+    },
     { key: 'fecha', header: 'Fecha', sortable: true, render: (item) => <span>{formatFecha(item.fecha)}</span> },
     { key: 'sueno', header: 'Horas', render: (item) => <span>{item.sueno ?? '—'}</span> },
     { key: 'observaciones', header: 'Observaciones', render: (item) => <span>{item.observaciones ?? '—'}</span> },

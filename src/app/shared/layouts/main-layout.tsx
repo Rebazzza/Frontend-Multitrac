@@ -94,6 +94,20 @@ const ICONS: Record<string, ReactNode> = {
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </>
   ),
+  documento: (
+    <>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+    </>
+  ),
+  clave: (
+    <>
+      <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+      <path d="M6 21v-2" />
+    </>
+  ),
   logout: (
     <>
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -113,7 +127,9 @@ const MODULE_ITEMS: { label: string; icon: string; to?: string }[] = [
   { label: 'INICIO', icon: 'inicio', to: '/' },
   { label: 'SUEÑO', icon: 'turno', to: '/sueno' },
   { label: 'DOC. EQUIPOS', icon: 'flota' },
-  { label: 'DOC. PERSONAL', icon: 'personal', to: '/personal' },
+  { label: 'PERSONAL', icon: 'personal', to: '/personal' },
+  { label: 'DOC. PERSONAL', icon: 'documento', to: '/personal-documentos' },
+  { label: 'CAMBIO DE CLAVE', icon: 'clave', to: '/change-password' },
 ];
 
 const CATALOG_ITEMS: NavItem[] = [
@@ -161,6 +177,9 @@ export function MainLayout() {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const fullName = authService.getFullName() ?? '';
+  const username = authService.getUsername() ?? '';
+  const roles = authService.getRoles();
+  const cargo = roles[0] ?? 'Usuario';
 
   const handleLogout = () => {
     authService.logout();
@@ -232,7 +251,13 @@ export function MainLayout() {
         <header className="layout__header">
           <div className="header__user" aria-label={`Menú de usuario de ${fullName || 'Usuario'}`}>
             <span className="header__avatar">{getInitials(fullName) || 'U'}</span>
-            <span className="header__name">{fullName || 'Usuario'}</span>
+            <div className="header__identity">
+              <span className="header__name">{fullName || 'Usuario'}</span>
+              <span className="header__meta">
+                {username ? `${username} · ` : ''}
+                {cargo}
+              </span>
+            </div>
           </div>
         </header>
         <main className="layout__main">

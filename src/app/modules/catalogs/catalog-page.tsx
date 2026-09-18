@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { DataTable, type Column } from '../../shared/components/data-table';
 import { Pagination } from '../../shared/components/pagination';
 import { SearchBar } from '../../shared/components/search-bar';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog';
 import { Alert } from '../../shared/components/alert';
+import { useLookupMaps, pickName, type LookupSpec } from '../../core/hooks/use-lookup-maps';
 import type { PagedResponse } from '../../models/paged-response.model';
 import type { PagedParams } from '../../models/paged-params.model';
 import type { ApiError } from '../../core/interceptors/error.interceptor';
 import { CatalogForm } from './catalog-form';
-import type { FieldConfig } from './catalog-config';
+import type { FieldConfig, CatalogLookup } from './catalog-config';
 import './catalog-page.css';
 
 interface CatalogPageProps {
@@ -16,6 +17,7 @@ interface CatalogPageProps {
   columns: Column<Record<string, unknown>>[];
   fields: FieldConfig[];
   defaultSort?: string;
+  lookups?: CatalogLookup[];
   getPaged: (params: PagedParams) => Promise<PagedResponse<unknown>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   create: (dto: any) => Promise<unknown>;
@@ -29,6 +31,7 @@ export function CatalogPage({
   columns,
   fields,
   defaultSort,
+  lookups,
   getPaged,
   create,
   update,
@@ -48,6 +51,51 @@ export function CatalogPage({
   const [deleteItem, setDeleteItem] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
+
+  const lookupSpecs = useMemo<LookupSpec[]>(
+    () => (lookups ?? []).map((l) => ({ key: l.column, resource: l.resource, idField: l.idField })),
+    [lookups],
+  );
+  const { maps } = useLookupMaps(lookupSpecs);
+
+  const renderedColumns = useMemo<Column<Record<string, unknown>>[]>(
+    () =>
+      columns.map((col) => {
+        const lookup = lookups?.find((l) => l.column === col.key);
+        if (!lookup || col.render) return col;
+        return {
+          ...col,
+          header: lookup.header ?? col.header,
+          render: (item) => {
+            const id = item[col.key];
+            if (id == null) return <span>—</span>;
+            const rec = maps[lookup.column]?.get(Number(id));
+            const name = pickName(rec, lookup.nameFields);
+            return <span>{name ?? `#${id}`}</span>;
+          },
+        };
+      }),
+    [columns, lookups, maps],
+  );
+
+  const formFields = useMemo<FieldConfig[]>(
+    () =>
+      fields.map((field) => {
+        const lookup = lookups?.find((l) => l.column === field.key);
+        if (!lookup) return field;
+        const records = maps[lookup.column] ?? new Map<number, Record<string, unknown>>();
+        const options = Array.from(records, ([id, rec]) => ({
+          value: String(id),
+          label: pickName(rec, lookup.nameFields) ?? `#${id}`,
+        })).sort((a, b) => a.label.localeCompare(b.label));
+        return {
+          ...field,
+          label: lookup.fieldLabel ?? field.label,
+          options,
+        };
+      }),
+    [fields, lookups, maps],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -149,7 +197,7 @@ export function CatalogPage({
       {loading && <div className="catalog-page__loading">Cargando...</div>}
 
       <DataTable
-        columns={columns}
+        columns={renderedColumns}
         data={(data?.items ?? []) as Record<string, unknown>[]}
         onEdit={handleEdit}
         onDelete={(item) => setDeleteItem(item as Record<string, unknown>)}
@@ -173,7 +221,7 @@ export function CatalogPage({
       {showForm && (
         <CatalogForm
           title={editItem ? `Editar ${title}` : `Nuevo ${title}`}
-          fields={fields}
+          fields={formFields}
           initialValues={editItem}
           onSubmit={handleFormSubmit}
           onCancel={() => { setShowForm(false); setEditItem(null); }}

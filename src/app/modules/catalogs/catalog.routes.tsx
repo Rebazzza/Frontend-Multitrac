@@ -31,6 +31,7 @@ function CatalogRoute({ configKey }: { configKey: CatalogKey }) {
       columns={config.columns}
       fields={config.fields}
       defaultSort={config.defaultSort}
+      lookups={config.lookups}
       getPaged={config.service.getPaged}
       create={config.service.create}
       update={config.service.update}

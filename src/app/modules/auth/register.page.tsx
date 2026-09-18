@@ -29,7 +29,7 @@ export function RegisterPage() {
         setError(response.message || 'Error al registrar');
         return;
       }
-      navigate('/catalogos/monedas');
+      navigate('/login', { state: { registered: true } });
     } catch (err) {
       const apiError = err as ApiError;
       if (apiError.validationErrors) {

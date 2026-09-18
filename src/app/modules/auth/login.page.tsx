@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { authService } from '../../core/services/auth.service';
 import type { ApiError } from '../../core/interceptors/error.interceptor';
 import '../../shared/components/form-field.css';
@@ -8,9 +8,13 @@ import './login.css';
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const location = useLocation();
+  const registered = Boolean((location.state as { registered?: boolean } | null)?.registered);
+  const [username, setUsername] = useState(
+    authService.isRemembered() ? (authService.getUsername() ?? '') : '',
+  );
   const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(true);
+  const [remember, setRemember] = useState(authService.isRemembered());
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -20,15 +24,21 @@ export function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await authService.login({ username, password });
+      const response = await authService.login({ username, password }, remember);
       if (!response.success) {
-        setError(response.message || 'Credenciales incorrectas');
+        setError(response.message || 'Su intento de acceso no tuvo éxito. Intente nuevamente.');
         return;
       }
-      navigate('/catalogos/monedas');
+      if (response.mustChangePassword) {
+        navigate('/change-password', {
+          state: { forced: true, username: response.username || username },
+        });
+        return;
+      }
+      navigate(authService.getPostLoginRoute());
     } catch (err) {
       const apiError = err as ApiError;
-      setError(apiError.message || 'Error al iniciar sesión');
+      setError(apiError.message || 'Su intento de acceso no tuvo éxito. Intente nuevamente.');
     } finally {
       setLoading(false);
     }
@@ -42,12 +52,13 @@ export function LoginPage() {
           <p className="login-card__subtitle">Sistema de Control</p>
         </div>
 
+        {registered && <div className="alert alert--success">Usuario registrado correctamente. Inicie sesión.</div>}
         {error && <div className="alert alert--error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-field">
             <label htmlFor="username" className="form-field__label">
-              UserName:
+              NOMBRE USUARIO:
             </label>
             <div className="form-field__input">
               <input
@@ -63,7 +74,7 @@ export function LoginPage() {
 
           <div className="form-field">
             <label htmlFor="password" className="form-field__label">
-              Password:
+              CONTRASEÑA:
             </label>
             <div className="form-field__input">
               <input
@@ -90,11 +101,11 @@ export function LoginPage() {
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </span>
-            <span className="login-card__remember-text">Mantenme Conectado</span>
+            <span className="login-card__remember-text">Recordarme la Próxima Vez.</span>
           </label>
 
           <button type="submit" className="login-card__submit" disabled={loading}>
-            {loading ? 'Ingresando...' : 'Iniciar Sesión'}
+            {loading ? 'Ingresando...' : 'INICIAR SESION'}
           </button>
         </form>
 

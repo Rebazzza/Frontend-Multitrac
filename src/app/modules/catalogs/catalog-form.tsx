@@ -83,14 +83,14 @@ export function CatalogForm({ title, fields, initialValues, onSubmit, onCancel }
             required={field.required}
             error={fieldErrors[field.key]?.[0]}
           >
-            {field.type === 'select' ? (
+            {field.options && field.options.length > 0 ? (
               <select
                 id={field.key}
                 value={String(values[field.key] ?? '')}
                 onChange={(e) => handleChange(field.key, e.target.value)}
               >
                 <option value="">-- Seleccionar --</option>
-                {field.options?.map((opt) => (
+                {field.options.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
               </select>

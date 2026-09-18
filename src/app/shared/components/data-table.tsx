@@ -11,6 +11,7 @@ export interface Column<T> {
 interface DataTableProps<T> {
   columns: Column<T>[];
   data: T[];
+  onView?: (item: T) => void;
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
   onSort?: (key: string) => void;
@@ -22,6 +23,7 @@ interface DataTableProps<T> {
 export function DataTable<T extends Record<string, unknown>>({
   columns,
   data,
+  onView,
   onEdit,
   onDelete,
   onSort,
@@ -48,13 +50,13 @@ export function DataTable<T extends Record<string, unknown>>({
                 )}
               </th>
             ))}
-            {(onEdit || onDelete) && <th className="data-table__actions-th">Acciones</th>}
+            {(onView || onEdit || onDelete) && <th className="data-table__actions-th">Acciones</th>}
           </tr>
         </thead>
         <tbody>
           {data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length + (onEdit || onDelete ? 1 : 0)} className="data-table__empty">
+              <td colSpan={columns.length + (onView || onEdit || onDelete ? 1 : 0)} className="data-table__empty">
                 {emptyMessage}
               </td>
             </tr>
@@ -66,8 +68,13 @@ export function DataTable<T extends Record<string, unknown>>({
                     {col.render ? col.render(item) : String(item[col.key] ?? '')}
                   </td>
                 ))}
-                {(onEdit || onDelete) && (
+                {(onView || onEdit || onDelete) && (
                   <td className="data-table__actions">
+                    {onView && (
+                      <button type="button" className="btn btn--secondary btn--sm" onClick={() => onView(item)}>
+                        Ver
+                      </button>
+                    )}
                     {onEdit && (
                       <button type="button" className="btn btn--secondary btn--sm" onClick={() => onEdit(item)}>
                         Editar

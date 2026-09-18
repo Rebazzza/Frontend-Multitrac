@@ -6,33 +6,29 @@ import type { UsuarioDto } from '../../models/usuario.model';
 
 const FULLNAME_KEY = 'auth_fullname';
 const ROLES_KEY = 'auth_roles';
+const USERNAME_KEY = 'auth_username';
+const REMEMBER_KEY = 'auth_remember';
 
 export const authService = {
-  async login(credentials: Credentials): Promise<AuthResponse> {
+  async login(credentials: Credentials, remember: boolean): Promise<AuthResponse> {
     const { data } = await httpService.post<AuthResponse>('/auth/login', credentials);
     if (data.success && data.token) {
+      this.setRemember(remember);
       this.setToken(data.token);
-      this.setFullName(data.fullName);
-      this.setRoles(data.roles);
+      this.setFullName(data.fullName ?? '');
+      this.setRoles(data.roles ?? []);
+      this.setUsername(data.username || credentials.username);
     }
     return data;
   },
 
   async register(credentials: RegisterCredentials): Promise<AuthResponse> {
     const { data } = await httpService.post<AuthResponse>('/auth/register', credentials);
-    if (data.success && data.token) {
-      this.setToken(data.token);
-      this.setFullName(data.fullName);
-      this.setRoles(data.roles);
-    }
     return data;
   },
 
   async changePassword(credentials: ChangePasswordCredentials): Promise<AuthResponse> {
     const { data } = await httpService.post<AuthResponse>('/auth/change-password', credentials);
-    if (data.success && data.token) {
-      this.setToken(data.token);
-    }
     return data;
   },
 
@@ -41,12 +37,22 @@ export const authService = {
     return data;
   },
 
+  setRemember(remember: boolean): void {
+    localStorage.setItem(REMEMBER_KEY, String(remember));
+  },
+
+  isRemembered(): boolean {
+    return localStorage.getItem(REMEMBER_KEY) === 'true';
+  },
+
   setToken(token: string): void {
-    localStorage.setItem(TOKEN_KEY, token);
+    const storage = this.isRemembered() ? localStorage : sessionStorage;
+    storage.setItem(TOKEN_KEY, token);
+    sessionStorage.removeItem(TOKEN_KEY);
   },
 
   getToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+    return sessionStorage.getItem(TOKEN_KEY) ?? localStorage.getItem(TOKEN_KEY);
   },
 
   setFullName(fullName: string): void {
@@ -71,21 +77,42 @@ export const authService = {
     }
   },
 
+  setUsername(username: string): void {
+    localStorage.setItem(USERNAME_KEY, username);
+  },
+
+  getUsername(): string | null {
+    return localStorage.getItem(USERNAME_KEY);
+  },
+
   isAuthenticated(): boolean {
     const token = this.getToken();
     if (!token) return false;
 
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.exp * 1000 > Date.now();
+      const expiresAt = payload.exp * 1000;
+      if (expiresAt <= Date.now()) return false;
+      this.setRemember(true);
+      return true;
     } catch {
       return false;
     }
   },
 
+  /** Ruta post-autenticacion segun rol (SF-006). */
+  getPostLoginRoute(): string {
+    const roles = this.getRoles();
+    if (roles.some((r) => /admin|administrador/i.test(r))) return '/';
+    return '/';
+  },
+
   logout(): void {
+    sessionStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(FULLNAME_KEY);
     localStorage.removeItem(ROLES_KEY);
+    localStorage.removeItem(USERNAME_KEY);
+    localStorage.removeItem(REMEMBER_KEY);
   },
 };

@@ -19,6 +19,15 @@ export interface FieldConfig {
   options?: { value: string; label: string }[];
 }
 
+export interface CatalogLookup {
+  column: string;
+  resource: string;
+  idField: string;
+  nameFields: string[];
+  header?: string;
+  fieldLabel?: string;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface CatalogConfig {
   resource: string;
@@ -26,6 +35,7 @@ export interface CatalogConfig {
   columns: Column<any>[];
   fields: FieldConfig[];
   defaultSort?: string;
+  lookups?: CatalogLookup[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   service: ReturnType<typeof createCatalogService<any>>;
 }
@@ -103,6 +113,14 @@ export const catalogConfigs: Record<string, CatalogConfig> = {
     title: 'Niveles Educativos',
     defaultSort: 'descripcionNivelEducativo',
     service: createCatalogService<NivelEducativo>('niveleducativo'),
+    lookups: [
+      {
+        column: 'idGradoInstruccion',
+        resource: 'GradoInstruccion',
+        idField: 'idGradoInstruccion',
+        nameFields: ['descripcionGradoInstruccion', 'gradoInstruccion'],
+      },
+    ],
     columns: [
       { key: 'idNivelEducativo', header: 'ID', sortable: true },
       { key: 'codInterno', header: 'Código Interno' },
@@ -179,6 +197,22 @@ export const catalogConfigs: Record<string, CatalogConfig> = {
     title: 'Turnos',
     defaultSort: 'posicionTurno',
     service: createCatalogService<Turno>('turno'),
+    lookups: [
+      {
+        column: 'idContratista',
+        resource: 'Contratista',
+        idField: 'idContratista',
+        nameFields: ['razonSocialContratista', 'nomContratista', 'socio'],
+        fieldLabel: 'Contratista',
+      },
+      {
+        column: 'idOperacion',
+        resource: 'Operacion',
+        idField: 'idOperacion',
+        nameFields: ['descOperacion'],
+        fieldLabel: 'Operación',
+      },
+    ],
     columns: [
       { key: 'idTurno', header: 'ID', sortable: true },
       { key: 'idContratista', header: 'Contratista', sortable: true },

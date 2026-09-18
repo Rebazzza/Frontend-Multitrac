@@ -41,8 +41,12 @@ export function applyErrorInterceptor(instance: AxiosInstance): void {
     (response) => response,
     (error: AxiosError<ErrorResponse>) => {
       const apiError = parseApiError(error);
+      const url = error.config?.url ?? '';
 
-      if (apiError.status === 401) {
+      // 401 en login/register = credenciales invalidas, NO sesion expirada.
+      const isAuthEndpoint = /\/auth\/(login|register)$/i.test(url);
+
+      if (apiError.status === 401 && !isAuthEndpoint) {
         authService.logout();
         window.location.href = '/login';
       }

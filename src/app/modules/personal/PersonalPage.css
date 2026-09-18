@@ -23,6 +23,22 @@
   display: flex;
   align-items: center;
   margin-bottom: 16px;
+  gap: 12px;
+}
+
+.personal-page__filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.personal-page__filter {
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-input);
+  color: var(--color-text-primary);
+  font-size: 13px;
 }
 
 .personal-page__loading {

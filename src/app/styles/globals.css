@@ -6,6 +6,18 @@
 }
 
 /* Botones globales */
+
+/* Selects nativos: el popup de opciones usa color-scheme dark
+   para no renderizar blanco-sobre-blanco en el desplegable. */
+select {
+  color-scheme: dark;
+}
+
+select option {
+  background-color: var(--color-bg-input);
+  color: var(--color-text-primary);
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
