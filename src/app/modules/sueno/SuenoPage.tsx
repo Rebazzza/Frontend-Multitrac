@@ -1,233 +1,169 @@
-import { useEffect, useState } from 'react';
-import { Alert } from '../../shared/components/alert';
-import { SearchBar } from '../../shared/components/search-bar';
-import { Pagination } from '../../shared/components/pagination';
-import { DataTable, type Column } from '../../shared/components/data-table';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog';
-import { suenoService } from '../../core/services/sueno.service';
-import { personalService } from '../../core/services/personal.service';
-import { useLookupMaps, pickName, type LookupSpec } from '../../core/hooks/use-lookup-maps';
-import type { PagedParams } from '../../models/paged-params.model';
-import type { PagedResponse } from '../../models/paged-response.model';
-import type { PersonalSueno } from '../../models/personal-sueno.model';
-import type { Personal } from '../../models/personal.model';
-import type { ApiError } from '../../core/interceptors/error.interceptor';
-import { SuenoFormModal, type SuenoFormValues } from './SuenoFormModal';
-import './SuenoPage.css';
+﻿import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import type { Column } from "../../shared/components/data-table";
+import { DataTable } from "../../shared/components/data-table";
+import { Pagination } from "../../shared/components/pagination";
+import { SearchBar } from "../../shared/components/search-bar";
+import { Alert } from "../../shared/components/alert";
+import { ConfirmDialog } from "../../shared/components/confirm-dialog";
+import { suenoService } from "../../core/services/sueno.service";
+import { useLookupMaps } from "../../core/hooks/use-lookup-maps";
+import { SuenoFormModal } from "./SuenoFormModal";
+import "./SuenoPage.css";
 
-const SUEÑO_LOOKUPS: LookupSpec[] = [
-  { key: 'empresa', resource: 'Empresa', idField: 'idEmpresa' },
-  { key: 'operacion', resource: 'Operacion', idField: 'idOperacion' },
-  { key: 'operacionGeneral', resource: 'OperacionGeneral', idField: 'idOperacionGeneral' },
-];
-
-function getNombrePersonal(personalList: Personal[], idPersonal?: number | null): string {
-  const p = personalList.find((item) => item.idPersonal === idPersonal);
-  if (!p) return idPersonal != null ? String(idPersonal) : '—';
-  return [p.apPersonal, p.amPersonal, p.nomPersonal].filter(Boolean).join(' ').trim() || `Personal ${p.idPersonal}`;
+interface ApiError {
+  status?: number;
+  message?: string;
 }
 
-function formatFecha(value?: string | null): string {
-  if (!value) return '—';
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return value;
-  return d.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+function getDescansoBadge(horas?: number | null) {
+  if (horas === null || horas === undefined) return { cls: "badge", text: "-" };
+  if (horas >= 8) return { cls: "badge badge--verde", text: "Suficiente" };
+  return { cls: "badge badge--rojo", text: "Insuficiente" };
 }
 
 export function SuenoPage() {
-  const [data, setData] = useState<PagedResponse<PersonalSueno> | null>(null);
-  const [personalList, setPersonalList] = useState<Personal[]>([]);
-  const { maps } = useLookupMaps(SUEÑO_LOOKUPS);
-  const [params, setParams] = useState<PagedParams>({
-    page: 1,
-    pageSize: 25,
-    sortBy: 'fecha',
-    sortDirection: 'desc',
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [reloadKey, setReloadKey] = useState(0);
-  const [showForm, setShowForm] = useState(false);
-  const [editItem, setEditItem] = useState<PersonalSueno | null>(null);
-  const [deleteItem, setDeleteItem] = useState<PersonalSueno | null>(null);
+  const [items, setItems] = useState<any[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<string | undefined>();
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | undefined>();
+  const [error, setError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [editing, setEditing] = useState<any>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ visible: boolean; item: any }>({ visible: false, item: null });
+  const [fechaFiltro, setFechaFiltro] = useState("");
+
+  const lookup = useLookupMaps([
+    { key: "personal", resource: "Personal", idField: "idPersonal" },
+  ]) as any;
+  const personalMap = lookup.personalMap ?? lookup.maps?.personal ?? new Map();
+
+  const cargarDatos = async () => {
+    setError(null);
+    try {
+      const response = await suenoService.getPaged({ page, pageSize, search: search.trim() || undefined, sortBy, sortDirection });
+      setItems((response as any).items ?? (response as any).data?.items ?? []);
+      setTotalPages((response as any).totalPages ?? (response as any).data?.totalPages ?? 1);
+    } catch (err) {
+      const apiError = err as ApiError;
+      setError(apiError?.message ?? "Error al cargar registros de sueno");
+    }
+  };
 
   useEffect(() => {
-    let cancelled = false;
-    personalService.getAll()
-      .then((list) => { if (!cancelled) setPersonalList(list); })
-      .catch(() => { if (!cancelled) setPersonalList([]); });
-    return () => { cancelled = true; };
-  }, []);
+    void cargarDatos();
+  }, [page, pageSize, search, sortBy, sortDirection]);
 
-  useEffect(() => {
-    let cancelled = false;
-    const fetch = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const result = await suenoService.getPaged(params);
-        if (!cancelled) setData(result);
-      } catch (err) {
-        if (!cancelled) {
-          const apiError = err as ApiError;
-          setError(apiError.message || 'Error al cargar los registros de sueño');
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-    fetch();
-    return () => { cancelled = true; };
-  }, [params, reloadKey]);
+  const handleSort = (columnKey: string) => {
+    if (sortBy === columnKey) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(columnKey);
+      setSortDirection("asc");
+    }
+  };
 
-  const columns: Column<PersonalSueno>[] = [
-    { key: 'idSueno', header: 'ID', sortable: true },
+  const handleNuevo = () => { setEditing(null); setShowModal(true); };
+  const handleEditar = (item: any) => { setEditing(item); setShowModal(true); };
+  const handleEliminar = (item: any) => { setConfirmDelete({ visible: true, item }); };
+
+  const confirmarEliminar = async () => {
+    if (!confirmDelete.item) return;
+    try {
+      await suenoService.remove(confirmDelete.item.idSueno);
+      setConfirmDelete({ visible: false, item: null });
+      if (page === 1) { void cargarDatos(); } else { setPage(1); }
+    } catch (err) {
+      const apiError = err as ApiError;
+      setError(apiError?.message ?? "Error al eliminar registro");
+    }
+  };
+
+  const handleModalClose = () => { setShowModal(false); setEditing(null); };
+  const handleSaved = () => { setShowModal(false); setEditing(null); setPage(1); void cargarDatos(); };
+
+  const handleFiltrarFecha = (e: FormEvent) => { e.preventDefault(); setPage(1); void cargarDatos(); };
+
+  // Cada columna tiene un `id` unico. `key` apunta a la propiedad real del
+  // DTO que devuelve el API (PersonalSuenoDto). El backend expone `sueno`
+  // (texto "H:MM") y `horasDescanso` (decimal calculado).
+  const columns: Column<any>[] = [
+    { id: "idSueno", key: "idSueno", header: "ID", sortable: true, width: 80 },
     {
-      key: 'idPersonal',
-      header: 'Conductor',
-      render: (item) => <span>{getNombrePersonal(personalList, item.idPersonal)}</span>,
-    },
-    {
-      key: 'idEmpresa',
-      header: 'Empresa',
-      render: (item) => {
-        const rec = maps.empresa?.get(Number(item.idEmpresa));
-        const name = pickName(rec, ['nomEmpresa', 'descEmpresa']);
-        return <span>{name ?? (item.idEmpresa != null ? `#${item.idEmpresa}` : '—')}</span>;
+      id: "trabajador",
+      key: "idPersonal",
+      header: "Trabajador",
+      width: 200,
+      render: (item: any) => {
+        const p = personalMap.get(item.idPersonal ?? -1);
+        if (p) return ((p.nomPersonal || "") + " " + (p.apPersonal || "")).trim();
+        return item.idPersonal != null ? String(item.idPersonal) : "-";
       },
     },
     {
-      key: 'idOperacionGeneral',
-      header: 'Operación',
-      render: (item) => {
-        const operacionGeneral = maps.operacionGeneral?.get(Number(item.idOperacionGeneral));
-        const operacion = operacionGeneral
-          ? maps.operacion?.get(Number(operacionGeneral.idOperacion))
-          : undefined;
-        const name = pickName(operacion, ['descOperacion']);
-        if (name) return <span>{name}</span>;
-        if (operacionGeneral) return <span>{`OpG #${operacionGeneral.idOperacionGeneral}`}</span>;
-        return <span>{item.idOperacionGeneral != null ? `#${item.idOperacionGeneral}` : '—'}</span>;
+      id: "fecha",
+      key: "fecha",
+      header: "Fecha",
+      sortable: true,
+      width: 120,
+      render: (item: any) => (item.fecha ? String(item.fecha).slice(0, 10) : "-"),
+    },
+    {
+      id: "sueno",
+      key: "sueno",
+      header: "Descanso (HH:MM)",
+      width: 140,
+      render: (item: any) => item.sueno || "-",
+    },
+    {
+      id: "horasDescanso",
+      key: "horasDescanso",
+      header: "Horas Totales",
+      sortable: true,
+      width: 120,
+      render: (item: any) => (item.horasDescanso != null ? Number(item.horasDescanso).toFixed(2) : "-"),
+    },
+    {
+      id: "estadoDescanso",
+      key: "estadoDescanso",
+      header: "Estado Descanso",
+      width: 140,
+      render: (item: any) => {
+        const b = getDescansoBadge(item.horasDescanso);
+        return <span className={b.cls}>{b.text}</span>;
       },
     },
-    { key: 'fecha', header: 'Fecha', sortable: true, render: (item) => <span>{formatFecha(item.fecha)}</span> },
-    { key: 'sueno', header: 'Horas', render: (item) => <span>{item.sueno ?? '—'}</span> },
-    { key: 'observaciones', header: 'Observaciones', render: (item) => <span>{item.observaciones ?? '—'}</span> },
+    { id: "observaciones", key: "observaciones", header: "Observaciones" },
   ];
 
-  const handleSearch = (search: string) => {
-    setParams((prev) => ({ ...prev, search, page: 1 }));
-  };
-
-  const handleSort = (key: string) => {
-    setParams((prev) => ({
-      ...prev,
-      sortBy: key,
-      sortDirection: prev.sortBy === key && prev.sortDirection === 'asc' ? 'desc' : 'asc',
-    }));
-  };
-
-  const handlePageChange = (page: number) => {
-    setParams((prev) => ({ ...prev, page }));
-  };
-
-  const handlePageSizeChange = (pageSize: number) => {
-    setParams((prev) => ({ ...prev, pageSize, page: 1 }));
-  };
-
-  const handleCreate = () => {
-    setEditItem(null);
-    setShowForm(true);
-  };
-
-  const handleEdit = (item: PersonalSueno) => {
-    setEditItem(item);
-    setShowForm(true);
-  };
-
-  const handleSubmit = async (values: SuenoFormValues) => {
-    try {
-      if (editItem) {
-        await suenoService.update(editItem.idSueno, { ...editItem, ...values });
-      } else {
-        await suenoService.create(values);
-      }
-      setShowForm(false);
-      setEditItem(null);
-      setReloadKey((k) => k + 1);
-    } catch (err) {
-      const apiError = err as ApiError;
-      throw apiError;
-    }
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!deleteItem) return;
-    try {
-      await suenoService.remove(deleteItem.idSueno);
-      setDeleteItem(null);
-      setReloadKey((k) => k + 1);
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(apiError.message || 'Error al eliminar');
-      setDeleteItem(null);
-    }
-  };
+  const itemsFiltrados = fechaFiltro
+    ? items.filter((it: any) => String(it.fecha ?? "").slice(0, 10) === fechaFiltro)
+    : items;
 
   return (
-    <div className="sueno-page">
-      <div className="sueno-page__header">
-        <h1 className="sueno-page__title">Registro de Sueño</h1>
-        <button type="button" className="sueno-page__add" onClick={handleCreate}>
-          Agregar
-        </button>
+    <div className="operaciones-page">
+      <div className="operaciones-page__header">
+        <h1>Control de Sueno / Fatiga</h1>
+        <button className="btn btn--primary" onClick={handleNuevo}>Nuevo Registro</button>
       </div>
-
-      {error && <Alert type="error" message={error} onClose={() => setError('')} />}
-
-      <div className="sueno-page__toolbar">
-        <SearchBar onSearch={handleSearch} placeholder="Buscar registros..." />
-      </div>
-
-      {loading && <div className="sueno-page__loading">Cargando...</div>}
-
-      <DataTable
-        columns={columns as unknown as Column<Record<string, unknown>>[]}
-        data={(data?.items ?? []) as unknown as Record<string, unknown>[]}
-        onEdit={(item) => handleEdit(item as unknown as PersonalSueno)}
-        onDelete={(item) => setDeleteItem(item as unknown as PersonalSueno)}
-        onSort={handleSort}
-        sortBy={params.sortBy}
-        sortDirection={params.sortDirection}
-        emptyMessage={loading ? 'Cargando...' : 'No se encontraron registros de sueño.'}
-      />
-      <Pagination
-        page={data?.page ?? 1}
-        totalPages={data?.totalPages ?? 1}
-        hasPrevious={data?.hasPrevious ?? false}
-        hasNext={data?.hasNext ?? false}
-        pageSize={params.pageSize ?? 25}
-        onPageSizeChange={handlePageSizeChange}
-        onPageChange={handlePageChange}
-      />
-
-      <SuenoFormModal
-        isOpen={showForm}
-        title={editItem ? 'Editar registro de sueño' : 'Nuevo registro de sueño'}
-        personalList={personalList}
-        initialValues={editItem}
-        onSubmit={handleSubmit}
-        onCancel={() => { setShowForm(false); setEditItem(null); }}
-      />
-
-      <ConfirmDialog
-        isOpen={!!deleteItem}
-        title="Eliminar registro"
-        message="¿Está seguro de eliminar este registro de sueño? Esta acción no se puede deshacer."
-        confirmLabel="Eliminar"
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setDeleteItem(null)}
-      />
+      {error && <Alert type="error" message={error} onClose={() => setError(null)} />}
+      <form className="operaciones-filtros" onSubmit={handleFiltrarFecha}>
+        <div className="operaciones-filtros__grid">
+          <div>
+            <label>Fecha</label>
+            <input type="date" value={fechaFiltro} onChange={(e: ChangeEvent<HTMLInputElement>) => setFechaFiltro(e.target.value)} />
+          </div>
+        </div>
+        <button type="submit" className="btn btn--secondary">Filtrar</button>
+      </form>
+      <SearchBar onSearch={setSearch} placeholder="Buscar..." />
+      <DataTable columns={columns as any} data={itemsFiltrados} onSort={handleSort} sortBy={sortBy} sortDirection={sortDirection} onEdit={handleEditar} onDelete={handleEliminar} emptyMessage="No hay registros de sueno" getRowKey={(item: any) => item.idSueno} />
+      <Pagination page={page} totalPages={totalPages} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(s) => { setPageSize(s); setPage(1); }} hasPrevious={page > 1} hasNext={page < totalPages} />
+      <SuenoFormModal isOpen={showModal} registro={editing} onClose={handleModalClose} onSaved={handleSaved} />
+      <ConfirmDialog isOpen={confirmDelete.visible} title="Eliminar registro" message={"¿Eliminar registro #" + (confirmDelete.item?.idSueno ?? "") + "?"} onConfirm={confirmarEliminar} onCancel={() => setConfirmDelete({ visible: false, item: null })} />
     </div>
   );
 }
+

@@ -1,0 +1,77 @@
+﻿.operaciones-page {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.operaciones-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.operaciones-filtros {
+  background: #fff;
+  color: #111827;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.operaciones-filtros input,
+.operaciones-filtros select,
+.operaciones-filtros textarea {
+  color: #111827;
+  color-scheme: light;
+}
+
+.operaciones-filtros select option {
+  background: #fff;
+  color: #111827;
+}
+
+.operaciones-filtros__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.operaciones-filtros label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.operaciones-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.operaciones-badge--planificacion {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.operaciones-badge--ruta {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.operaciones-badge--finalizado {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+
+.toasts { position: fixed; bottom: 1rem; right: 1rem; display: flex; flex-direction: column; gap: 0.5rem; z-index: 1000; }
+.toast { background: #111827; color: #fff; padding: 0.75rem 1rem; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,.1); }
+.touch-input { min-height: 44px; padding: 0.5rem; }
+@media (max-width: 768px) { .operaciones-page { padding: 0.75rem; } }

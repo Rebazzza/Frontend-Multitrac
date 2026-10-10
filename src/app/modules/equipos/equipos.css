@@ -1,0 +1,12 @@
+.equipos-page { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+.equipos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.card-eq { background: #fff; color: #111827; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.card-eq input, .card-eq select, .card-eq textarea { color: #111827; color-scheme: light; }
+.badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+.badge--verde { background: #d1fae5; color: #065f46; }
+.badge--amarillo { background: #fef3c7; color: #92400e; }
+.badge--rojo { background: #fee2e2; color: #991b1b; }
+.badge--azul { background: #dbeafe; color: #1e40af; }
+.badge--gris { background: #f1f5f9; color: #334155; }
+.touch-btn { min-height: 44px; min-width: 44px; }
+@media (max-width: 768px) { .equipos-page { padding: 0.75rem; } }

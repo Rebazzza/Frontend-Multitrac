@@ -1,8 +1,8 @@
 export interface UsuarioDto {
-  id: number;
+  userId: string;
   username: string;
   fullName: string;
   email: string;
   roles: string[];
-  isActive: boolean;
+  isApproved: boolean;
 }

@@ -63,6 +63,7 @@ Todos con listado paginado, busqueda, orden, crear, editar y eliminar (CRUD comp
 | Funcionalidad | Detalle |
 |---------------|---------|
 | **Modulo Sueño** | CRUD completo de `PersonalSueno`: tabla paginada (fecha, conductor, operacion, horas), busqueda, crear/editar/eliminar con confirmacion y selector de conductor |
+| **Modulo Checklist de Equipos** | Ruta `/equipos/checklist`: listado paginado de `EQUIPO_CHECKLIST` (tipo, equipo, personal, fecha, resultado) + alta mediante `POST /EquipoChecklist/registrar`, que elige la fila de `OPERACION_GENERAL_EQUIPO` del equipo dentro de una operacion (`GET /EquipoChecklist/filas`) y actualiza las columnas del checklist de Mantenimiento o PdP |
 | **Dashboard** | Resumen del dia con metricas: `documentosExpirados`, `checklistsRegistrados`, `suenosHoy` + grid de acciones rapidas |
 
 ---
@@ -77,6 +78,7 @@ Todos con listado paginado, busqueda, orden, crear, editar y eliminar (CRUD comp
 | `catalog.service.ts` | Factory generica `createCatalogService<T>(resource)` → getAll, getPaged, getById, create, update, remove |
 | `personal.service.ts` | `getPaged`, `getAll`, `getCargosPersonal`, `getCargos` |
 | `sueno.service.ts` | CRUD sobre `/PersonalSueno` |
+| `equipo-checklist.service.ts` | `getFilas(idOperacionGeneral, codEquipo)` y `registrar(payload)` sobre `/EquipoChecklist` |
 | `dashboard.service.ts` | `getResumen()` → GET `/dashboard/resumen` |
 | `jwt.interceptor.ts` | Inyecta `Authorization: Bearer <token>` |
 | `error.interceptor.ts` | Parsea errores a `ApiError`, maneja 401 (logout + redirect a `/login`) |

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { authService } from '../../core/services/auth.service';
 import logo from '../../../assets/logo.png';
@@ -125,10 +125,17 @@ const ICONS: Record<string, ReactNode> = {
 
 const MODULE_ITEMS: { label: string; icon: string; to?: string }[] = [
   { label: 'INICIO', icon: 'inicio', to: '/' },
+  { label: 'OPERACIONES', icon: 'flota', to: '/operaciones' },
+  { label: 'FLETES', icon: 'documento', to: '/operaciones/fletes' },
   { label: 'SUEÑO', icon: 'turno', to: '/sueno' },
-  { label: 'DOC. EQUIPOS', icon: 'flota' },
+  { label: 'VENCIMIENTOS', icon: 'documento', to: '/personal/vencimientos' },
+  { label: 'CHECKLIST', icon: 'flota', to: '/checklist' },
+  { label: 'PRE-OP', icon: 'flota', to: '/checklist/nuevo' },
+  { label: 'HIST. CHECKLIST', icon: 'documento', to: '/checklist/historial' },
+  { label: 'FLOTA', icon: 'flota', to: '/equipos' },
   { label: 'PERSONAL', icon: 'personal', to: '/personal' },
   { label: 'DOC. PERSONAL', icon: 'documento', to: '/personal-documentos' },
+  { label: 'DOCUMENTOS', icon: 'documento', to: '/documentos' },
   { label: 'CAMBIO DE CLAVE', icon: 'clave', to: '/change-password' },
 ];
 
@@ -173,13 +180,33 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
+/**
+ * Coincidencia por segmento de ruta: exacta o como prefijo de carpeta.
+ * Evita que `/personal` active en `/personal-documentos` (que no es un hijo real).
+ */
+function matchesPath(pathname: string, to: string): boolean {
+  if (to === '/') return pathname === '/';
+  return pathname === to || pathname.startsWith(`${to}/`);
+}
+
 export function MainLayout() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const fullName = authService.getFullName() ?? '';
   const username = authService.getUsername() ?? '';
   const roles = authService.getRoles();
   const cargo = roles[0] ?? 'Usuario';
+
+  // Un único destino activo: gana la coincidencia más específica (ruta más larga).
+  const activePath = useMemo(() => {
+    const rutas = [...MODULE_ITEMS, ...CATALOG_ITEMS]
+      .map((item) => item.to)
+      .filter((to): to is string => Boolean(to));
+    return rutas
+      .filter((to) => matchesPath(pathname, to))
+      .sort((a, b) => b.length - a.length)[0] ?? '';
+  }, [pathname]);
 
   const handleLogout = () => {
     authService.logout();
@@ -212,9 +239,8 @@ export function MainLayout() {
               <NavLink
                 key={item.label}
                 to={item.to}
-                className={({ isActive }) =>
-                  `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
-                }
+                end
+                className={`sidebar__link ${item.to === activePath ? 'sidebar__link--active' : ''}`}
               >
                 <NavIcon name={item.icon} />
                 <span className="sidebar__link-label">{item.label}</span>
@@ -231,9 +257,8 @@ export function MainLayout() {
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) =>
-                `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
-              }
+              end
+              className={`sidebar__link ${item.to === activePath ? 'sidebar__link--active' : ''}`}
             >
               <NavIcon name={item.icon} />
               <span className="sidebar__link-label">{item.label}</span>

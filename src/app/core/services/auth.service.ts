@@ -46,9 +46,11 @@ export const authService = {
   },
 
   setToken(token: string): void {
-    const storage = this.isRemembered() ? localStorage : sessionStorage;
+    const persistent = this.isRemembered();
+    const storage = persistent ? localStorage : sessionStorage;
+    const otherStorage = persistent ? sessionStorage : localStorage;
     storage.setItem(TOKEN_KEY, token);
-    sessionStorage.removeItem(TOKEN_KEY);
+    otherStorage.removeItem(TOKEN_KEY);
   },
 
   getToken(): string | null {

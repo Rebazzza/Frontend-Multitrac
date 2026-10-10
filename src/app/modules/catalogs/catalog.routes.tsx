@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { CatalogPage } from './catalog-page';
 import { catalogConfigs, type CatalogKey } from './catalog-config';
 
@@ -20,9 +20,15 @@ const ROUTE_PATHS: Record<CatalogKey, string> = {
   tiposOcurrencia: 'tipos-ocurrencia',
 };
 
+const ID_KEYS: Partial<Record<CatalogKey, string>> = {
+  tiposPago: 'idTipoPago',
+  tiposOcurrencia: 'idTipoOcurrencia',
+};
+
 function CatalogRoute({ configKey }: { configKey: CatalogKey }) {
   const config = catalogConfigs[configKey];
-  const idKey = `id${config.resource.charAt(0).toUpperCase()}${config.resource.slice(1)}`;
+  const idKey = ID_KEYS[configKey]
+    ?? `id${config.resource.charAt(0).toUpperCase()}${config.resource.slice(1)}`;
 
   return (
     <CatalogPage
@@ -44,6 +50,7 @@ function CatalogRoute({ configKey }: { configKey: CatalogKey }) {
 export function CatalogRoutes() {
   return (
     <Routes>
+      <Route index element={<Navigate to='/catalogos/monedas' replace />} />
       {CATALOG_KEYS.map((key) => (
         <Route
           key={key}
@@ -51,6 +58,7 @@ export function CatalogRoutes() {
           element={<CatalogRoute configKey={key} />}
         />
       ))}
+      <Route path='*' element={<Navigate to='/catalogos/monedas' replace />} />
     </Routes>
   );
 }

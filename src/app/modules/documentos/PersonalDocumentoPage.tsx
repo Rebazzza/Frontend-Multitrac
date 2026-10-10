@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert } from '../../shared/components/alert';
 import { SearchBar } from '../../shared/components/search-bar';
 import { Pagination } from '../../shared/components/pagination';
 import { DataTable, type Column } from '../../shared/components/data-table';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog';
 import { Modal } from '../../shared/components/modal';
-import { personalDocumentoService } from '../../core/services/personal-documento.service';
+import { personalDocumentoService, type PersonalDocumentoPagedParams } from '../../core/services/personal-documento.service';
+import type { PagedResponse } from '../../models/paged-response.model';
 import type { CatalogoPersonalDocumento, CatalogoPersonalPersonal, PersonalDocumentoDto, PersonalDocumentoListadoDto } from '../../models/personal-documento.model';
 import type { ApiError } from '../../core/interceptors/error.interceptor';
 import { PersonalDocumentoFormModal, type PersonalDocumentoFormValues } from './PersonalDocumentoFormModal';
@@ -43,15 +44,18 @@ function formatFecha(value?: string | null): string {
 }
 
 export function PersonalDocumentoPage() {
-  const [items, setItems] = useState<PersonalDocumentoListadoDto[] | null>(null);
+  const [data, setData] = useState<PagedResponse<PersonalDocumentoListadoDto> | null>(null);
   const [documentos, setDocumentos] = useState<CatalogoPersonalDocumento[]>([]);
   const [personales, setPersonales] = useState<CatalogoPersonalPersonal[]>([]);
-  const [search, setSearch] = useState('');
-  const [filterDocumento, setFilterDocumento] = useState('');
-  const [filterEstado, setFilterEstado] = useState('');
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(25);
+  const [params, setParams] = useState<PersonalDocumentoPagedParams>({
+    page: 1,
+    pageSize: 25,
+    search: '',
+    idDocumento: undefined,
+    estado: '',
+  });
   const [error, setError] = useState('');
+  const [catalogoAviso, setCatalogoAviso] = useState('');
   const [loading, setLoading] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [showForm, setShowForm] = useState(false);
@@ -63,23 +67,13 @@ export function PersonalDocumentoPage() {
   useEffect(() => {
     let cancelled = false;
     const loadCatalogs = async () => {
-      try {
-        const [docList, perList] = await Promise.all([
-          personalDocumentoService.getCatalogoDocumentos(),
-          personalDocumentoService.getCatalogoPersonales(),
-        ]);
-        if (!cancelled) {
-          setDocumentos(docList);
-          setPersonales(perList);
-        }
-      } catch {
-        if (!cancelled) {
-          setDocumentos([]);
-          setPersonales([]);
-        }
-      }
+      const resultado = await personalDocumentoService.getCatalogos();
+      if (cancelled) return;
+      setDocumentos(resultado.documentos);
+      setPersonales(resultado.personales);
+      setCatalogoAviso(resultado.mensaje);
     };
-    loadCatalogs();
+    void loadCatalogs();
     return () => { cancelled = true; };
   }, []);
 
@@ -89,8 +83,8 @@ export function PersonalDocumentoPage() {
       setLoading(true);
       setError('');
       try {
-        const result = await personalDocumentoService.getAll();
-        if (!cancelled) setItems(result);
+        const result = await personalDocumentoService.getPaged(params);
+        if (!cancelled) setData(result);
       } catch (err) {
         if (!cancelled) {
           const apiError = err as ApiError;
@@ -100,29 +94,9 @@ export function PersonalDocumentoPage() {
         if (!cancelled) setLoading(false);
       }
     };
-    fetch();
+    void fetch();
     return () => { cancelled = true; };
-  }, [reloadKey]);
-
-  const filtered = useMemo(() => {
-    if (!items) return [];
-    const term = search.trim().toLowerCase();
-    return items.filter((item) => {
-      if (filterDocumento && String(item.idDocumento) !== filterDocumento) return false;
-      if (filterEstado && (item.estado ?? '') !== filterEstado) return false;
-      if (!term) return true;
-      return [item.personal, item.nombreDocumento, item.nroDocumento, String(item.idPersonalDocumento)]
-        .filter(Boolean)
-        .some((v) => String(v).toLowerCase().includes(term));
-    });
-  }, [items, search, filterDocumento, filterEstado]);
-
-  const pagedItems = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return filtered.slice(start, start + pageSize);
-  }, [filtered, page, pageSize]);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  }, [params, reloadKey]);
 
   const columns: Column<PersonalDocumentoListadoDto>[] = [
     { key: 'idPersonalDocumento', header: 'ID', render: (item) => <span>{item.idPersonalDocumento}</span> },
@@ -235,13 +209,23 @@ export function PersonalDocumentoPage() {
       </div>
 
       {error && <Alert type="error" message={error} onClose={() => setError('')} />}
+      {catalogoAviso && <Alert type="warning" message={catalogoAviso} onClose={() => setCatalogoAviso('')} />}
 
       <div className="personal-documento-page__toolbar">
-        <SearchBar onSearch={setSearch} placeholder="Buscar documento..." />
+        <SearchBar
+          onSearch={(term) => setParams((prev) => ({ ...prev, page: 1, search: term }))}
+          placeholder="Buscar documento..."
+        />
         <select
           className="personal-documento-page__filter"
-          value={filterDocumento}
-          onChange={(e) => { setFilterDocumento(e.target.value); setPage(1); }}
+          value={params.idDocumento ?? ''}
+          onChange={(e) =>
+            setParams((prev) => ({
+              ...prev,
+              page: 1,
+              idDocumento: e.target.value ? Number(e.target.value) : undefined,
+            }))
+          }
           aria-label="Filtrar por documento"
         >
           <option value="">Todos los documentos</option>
@@ -253,8 +237,10 @@ export function PersonalDocumentoPage() {
         </select>
         <select
           className="personal-documento-page__filter"
-          value={filterEstado}
-          onChange={(e) => { setFilterEstado(e.target.value); setPage(1); }}
+          value={params.estado ?? ''}
+          onChange={(e) =>
+            setParams((prev) => ({ ...prev, page: 1, estado: e.target.value }))
+          }
           aria-label="Filtrar por estado"
         >
           <option value="">Todos los estados</option>
@@ -267,20 +253,20 @@ export function PersonalDocumentoPage() {
 
       <DataTable
         columns={columns as unknown as Column<Record<string, unknown>>[]}
-        data={(pagedItems as unknown) as Record<string, unknown>[]}
+        data={(data?.items ?? []) as unknown as Record<string, unknown>[]}
         onView={(item) => handleView(item as unknown as PersonalDocumentoListadoDto)}
         onEdit={(item) => handleEdit(item as unknown as PersonalDocumentoListadoDto)}
         onDelete={(item) => setDeleteItem(item as unknown as PersonalDocumentoListadoDto)}
         emptyMessage={loading ? 'Cargando...' : 'No se encontraron documentos.'}
       />
       <Pagination
-        page={page}
-        totalPages={totalPages}
-        hasPrevious={page > 1}
-        hasNext={page < totalPages}
-        pageSize={pageSize}
-        onPageSizeChange={(size) => { setPageSize(size); setPage(1); }}
-        onPageChange={setPage}
+        page={data?.page ?? 1}
+        totalPages={data?.totalPages ?? 1}
+        hasPrevious={data?.hasPrevious ?? false}
+        hasNext={data?.hasNext ?? false}
+        pageSize={params.pageSize ?? 25}
+        onPageSizeChange={(size) => { setParams((prev) => ({ ...prev, page: 1, pageSize: size })); }}
+        onPageChange={(page) => setParams((prev) => ({ ...prev, page }))}
       />
 
       <Modal

@@ -5,6 +5,7 @@
 
 .data-table {
   width: 100%;
+  min-width: 880px;
   table-layout: fixed;
   border-collapse: collapse;
   font-family: var(--font-body);

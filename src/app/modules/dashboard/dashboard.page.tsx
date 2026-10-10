@@ -56,7 +56,7 @@ interface QuickAction {
 
 const QUICK_ACTIONS: QuickAction[] = [
   { label: 'Registrar sueño', description: 'Ingreso de sueño de hoy', to: '/sueno' },
-  { label: 'Checklist de equipos', description: 'Mantenimiento y PdP', comingSoon: true },
+  { label: 'Checklist', description: 'Mantenimiento y PdP', to: '/checklist' },
   { label: 'Documentos de equipos', description: 'Tractos y carretas', comingSoon: true },
   { label: 'Catálogos', description: 'Monedas, bancos, cargos...' },
 ];
